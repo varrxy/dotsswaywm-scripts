@@ -57,17 +57,8 @@ execute_command "sudo apt install -y nvidia-driver-libs:i386"
 
 # Enable kernel modesetting
 echo -e "${CYAN}Enabling kernel modesetting...${RESET}"
-{
-    echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1"' | sudo tee /etc/default/grub.d/nvidia-modeset.cfg
-    sudo update-grub
-}
-
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Kernel modesetting enabled successfully!${RESET}"
-else
-    echo -e "${RED}Failed to enable kernel modesetting. Exiting.${RESET}"
-    exit 1
-fi
+echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1"' | sudo tee /etc/default/grub.d/nvidia-modeset.cfg
+execute_command "sudo update-grub"
 
 # Install NVIDIA suspend helper scripts
 execute_command "sudo apt install -y nvidia-suspend-common"
