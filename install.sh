@@ -12,8 +12,8 @@ cat << "EOF"
 EOF
 
 # Attribution
-echo -e "          Created by https://github.com/varrxy          "
-echo -e "=========================================="
+echo -e "                     Created by https://github.com/varrxy                   "
+echo -e "============================================================================"
 
 # Set the directory for the scripts
 SCRIPT_DIR="./scripts-installation"
@@ -75,6 +75,12 @@ fi
 read -p "Do you want to install Zsh? (y/n): " install_zsh
 if [[ "$install_zsh" == "y" ]]; then
     run_script "zsh.sh"
+fi
+
+# Ask user if they want to install NVIM
+read -p "Do you want to setup CustomNVIM? (y/n): " setup_nvim
+if [[ "$setup_nvim" == "y" ]]; then
+    run_script "VimVarrxy.sh"
 fi
 
 # Execute install.sh and bluetooth.sh after Zsh installation

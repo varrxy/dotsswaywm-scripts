@@ -1,74 +1,72 @@
 #!/bin/bash
 
-# Function for colored output
-color_output() {
-    case $1 in
-        info) echo -e "\e[32m[INFO] $2\e[0m" ;;   # Green
-        warn) echo -e "\e[33m[WARNING] $2\e[0m" ;; # Yellow
-        error) echo -e "\e[31m[ERROR] $2\e[0m" ;; # Red
-        *) echo "$2" ;;
-    esac
-}
+# Define colors
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+RED="\033[0;31m"
+NC="\033[0m" # No Color
 
-# Spinner function
+# Function to show a spinner
 spinner() {
-    local pid=$1
-    local delay=0.75
-    local spin='/-\|'
+    local pid=$!
+    local delay=0.1
+    local spinchars="/-\|"
     local i=0
-
     while ps -p $pid > /dev/null; do
-        local temp=${spin:i++%${#spin}:1}
-        echo -ne "\r$temp Creating swap file..."
+        i=$(( (i+1) % 4 ))
+        printf "\r${YELLOW}Processing... ${spinchars:i:1}${NC}"
         sleep $delay
     done
-    echo -ne "\r\033[K"  # Clear the line
+    printf "\r"
 }
 
-# Function to get swap size from user
-get_swap_size() {
-    read -p "Enter the desired swap size (e.g., 1G, 2G, 2.12G): " SWAPSIZE
-    if [[ ! $SWAPSIZE =~ ^[0-9]+(\.[0-9]+)?G$ ]]; then
-        color_output error "Invalid input. Please enter a valid size (e.g., 1G, 2G, 2.12G)."
-        exit 1
-    fi
-}
+# Prompt the user for the swap file size in GB
+read -p "Enter the size of the swap file in GB (e.g., 1 for 1G): " SWAP_SIZE_GB
 
-# Get swap size from user
-get_swap_size
-
-# Swap file settings
-SWAPFILE="/swapfile"
-
-# Check for existing swap space
-if sudo swapon --show; then
-    color_output info "Swap space already exists. Exiting."
-    exit 0
-fi
-
-# Create the swap file
-color_output info "Creating swap file of size $SWAPSIZE..."
-{
-    sudo fallocate -l $SWAPSIZE $SWAPFILE &&
-    sudo chmod 600 $SWAPFILE &&
-    sudo mkswap $SWAPFILE &&
-    sudo swapon $SWAPFILE
-} & spinner $!
-
-# Verify swap creation
-if sudo swapon --show; then
-    color_output info "Swap file created and activated successfully."
-else
-    color_output error "Failed to create or activate swap file."
+# Validate input
+if ! [[ $SWAP_SIZE_GB =~ ^[0-9]+$ ]]; then
+    echo -e "${RED}Invalid input. Please enter a number.${NC}"
     exit 1
 fi
 
-# Check for duplicate entry in /etc/fstab
+# Convert GB to bytes for fallocate
+SWAP_SIZE="${SWAP_SIZE_GB}G"
+SWAPFILE="/swapfile"
+
+# Create the swap file
+echo -e "${GREEN}Creating swap file of size $SWAP_SIZE...${NC}"
+{
+    sudo fallocate -l $SWAP_SIZE $SWAPFILE
+} & spinner
+
+# Set the correct permissions
+echo -e "${GREEN}Setting permissions on $SWAPFILE...${NC}"
+{
+    sudo chmod 600 $SWAPFILE
+} & spinner
+
+# Set up the swap space
+echo -e "${GREEN}Setting up swap space...${NC}"
+{
+    sudo mkswap $SWAPFILE
+} & spinner
+
+# Enable the swap file
+echo -e "${GREEN}Enabling swap file...${NC}"
+{
+    sudo swapon $SWAPFILE
+} & spinner
+
+# Confirm the swap is active
+echo -e "${GREEN}Current swap space:${NC}"
+sudo swapon --show
+
+# Optionally, make the change permanent by adding it to fstab
 if ! grep -q "$SWAPFILE" /etc/fstab; then
-    echo "$SWAPFILE swap swap defaults 0 0" | sudo tee -a /etc/fstab
-    color_output info "Swap file entry added to /etc/fstab."
-else
-    color_output warn "Swap file entry already exists in /etc/fstab."
+    echo -e "${GREEN}Adding swap file to /etc/fstab for persistence...${NC}"
+    {
+        echo "$SWAPFILE none swap sw 0 0" | sudo tee -a /etc/fstab
+    } & spinner
 fi
 
-color_output info "Swap file setup is complete!"
+echo -e "${GREEN}Swap file setup completed.${NC}"

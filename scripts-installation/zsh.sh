@@ -38,19 +38,21 @@ else
     exit 1
 fi
 
-# Install Zsh and Git
-echo -e "${CYAN}Installing Zsh and Git...${RESET}"
-{
-    sudo apt install -y zsh git
-} &
-show_spinner $!
+# Install or upgrade Zsh and Git only if necessary
+for pkg in zsh git; do
+    echo -e "${CYAN}Checking for updates for ${pkg}...${RESET}"
+    {
+        sudo apt install -y --no-install-recommends $pkg
+    } &
+    show_spinner $!
 
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Zsh and Git installed successfully!${RESET}"
-else
-    echo -e "${RED}Failed to install Zsh and Git. Exiting.${RESET}"
-    exit 1
-fi
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}${pkg} is up to date or has been installed successfully!${RESET}"
+    else
+        echo -e "${RED}Failed to install or upgrade ${pkg}. Exiting.${RESET}"
+        exit 1
+    fi
+done
 
 # Change default shell to Zsh
 if ! [ "$SHELL" == "$(which zsh)" ]; then
@@ -132,6 +134,12 @@ if ! grep -q 'source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh' ~/.zshrc; t
         echo 'source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh'
         echo 'source ~/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh'
         echo 'source ~/.powerlevel10k/powerlevel10k.zsh-theme'
+        echo 'HISTSIZE=10000'  # History size
+        echo 'SAVEHIST=10000'  # Commands to save in history
+        echo 'HISTFILE=~/.zsh_history'  # History file
+        echo 'setopt APPEND_HISTORY'  # Append to history file
+        echo 'setopt INC_APPEND_HISTORY'  # Incremental append
+        echo 'setopt SHARE_HISTORY'  # Share history across sessions
     } >> ~/.zshrc
     echo -e "${GREEN}.zshrc configured successfully!${RESET}"
 else
