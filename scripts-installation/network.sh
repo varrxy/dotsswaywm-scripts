@@ -18,6 +18,10 @@ plugins=keyfile
 managed=false
 EOL
 
+# Enable NetworkManager to start at boot
+echo "Enabling NetworkManager to start at boot..."
+sudo systemctl enable NetworkManager
+
 # Restart NetworkManager to apply changes
 echo "Restarting NetworkManager..."
 sudo systemctl restart NetworkManager
