@@ -87,5 +87,11 @@ print_color "34" "Restarting NetworkManager..."
     sudo systemctl restart NetworkManager
 } & spinner $!
 
+# Enable MPD service
+print_color "34" "Enabling MPD service..."
+{
+    systemctl --user enable mpd.service
+} & spinner $!
+
 # Completion message
 print_color "32" "NetworkManager setup completed successfully!"
