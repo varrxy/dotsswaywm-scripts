@@ -22,10 +22,6 @@ EOL
 echo "Enabling NetworkManager to start at boot..."
 sudo systemctl enable NetworkManager
 
-# Restart NetworkManager to apply changes
-echo "Restarting NetworkManager..."
-sudo systemctl restart NetworkManager
-
 # Optional: Add current user to netdev group
 echo "Adding user to netdev group (optional)..."
 sudo usermod -aG netdev $USER
