@@ -47,6 +47,26 @@ else
     exit 1
 fi
 
+# Set environment variables for Qt
+echo -e "${CYAN}Setting environment variables for Qt...${RESET}"
+{
+    if ! grep -q "QT_QPA_PLATFORM=wayland" /etc/environment; then
+        echo "QT_QPA_PLATFORM=wayland" | sudo tee -a /etc/environment
+    fi
+
+    if ! grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment; then
+        echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a /etc/environment
+    fi
+} &
+show_spinner $!
+
+if [[ $? -eq 0 ]]; then
+    echo -e "${GREEN}Environment variables set successfully!${RESET}"
+else
+    echo -e "${RED}Failed to set environment variables. Exiting.${RESET}"
+    exit 1
+fi
+
 # Clone the configuration repository into /tmp
 TEMP_DIR="/tmp/dots-swaywm"
 echo -e "${CYAN}Cloning Sway configuration repository into ${TEMP_DIR}...${RESET}"
