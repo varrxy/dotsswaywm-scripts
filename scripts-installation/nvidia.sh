@@ -46,8 +46,12 @@ execute_command "sudo apt install -y linux-headers-$(uname -r)"
 # Install NVIDIA driver and firmware
 execute_command "sudo apt install -y nvidia-driver firmware-misc-nonfree"
 
-# Enable 32-bit architecture
-execute_command "sudo dpkg --add-architecture i386"
+# Enable 32-bit architecture if not already enabled
+if ! dpkg --print-foreign-architectures | grep -q "i386"; then
+    execute_command "sudo dpkg --add-architecture i386"
+else
+    echo -e "${GREEN}32-bit architecture already enabled.${RESET}"
+fi
 
 # Update package list for 32-bit libraries
 execute_command "sudo apt update"
