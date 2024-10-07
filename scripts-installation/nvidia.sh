@@ -41,7 +41,7 @@ fi
 execute_command "sudo apt update"
 
 # Install Linux headers
-execute_command "sudo apt install -y linux-headers-\$(uname -r)"
+execute_command "sudo apt install -y linux-headers-$(uname -r)"
 
 # Install NVIDIA driver and firmware
 execute_command "sudo apt install -y nvidia-driver firmware-misc-nonfree"
@@ -57,7 +57,7 @@ execute_command "sudo apt install -y nvidia-driver-libs:i386"
 
 # Enable kernel modesetting
 echo -e "${CYAN}Enabling kernel modesetting...${RESET}"
-echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1"' | sudo tee /etc/default/grub.d/nvidia-modeset.cfg
+execute_command "echo 'GRUB_CMDLINE_LINUX=\"\$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1\"' | sudo tee /etc/default/grub.d/nvidia-modeset.cfg"
 execute_command "sudo update-grub"
 
 # Install NVIDIA suspend helper scripts
