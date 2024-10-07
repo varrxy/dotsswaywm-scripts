@@ -14,6 +14,9 @@ VERSION="v3.2.1"
 FONT_URL="https://github.com/ryanoasis/nerd-fonts/releases/download/$VERSION/JetBrainsMono.zip"
 INSTALL_DIR="/usr/share/fonts/truetype/JetBrainsMono"
 
+# Cleanup on exit
+trap 'rm -f "/tmp/JetBrainsMono.zip"' EXIT
+
 # Function to print a header
 print_header() {
     echo -e "${MAGENTA}==========================================${RESET}"
@@ -26,6 +29,12 @@ print_footer() {
     echo -e "${MAGENTA}==========================================${RESET}"
     echo -e "${GREEN}  Font installation completed! 🎉         ${RESET}"
     echo -e "${MAGENTA}==========================================${RESET}"
+}
+
+# Function to check for required tools
+check_tools() {
+    command -v wget >/dev/null 2>&1 || { echo -e "${RED}Error: wget is required but not installed. Exiting.${RESET}"; exit 1; }
+    command -v unzip >/dev/null 2>&1 || { echo -e "${RED}Error: unzip is required but not installed. Exiting.${RESET}"; exit 1; }
 }
 
 # Function to show a spinner while waiting
@@ -45,6 +54,7 @@ show_spinner() {
 
 # Start of the script
 print_header
+check_tools
 
 # Step 1: Check if the font is already installed
 echo -e "${CYAN}Step 1: Checking if JetBrains Mono is already installed...${RESET}"
@@ -61,13 +71,13 @@ echo -e "${CYAN}Step 2: Downloading JetBrains Mono Nerd Font version $VERSION...
 } &
 show_spinner $!
 
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Download successful!${RESET}"
-else
+if [[ $? -ne 0 || ! -f "/tmp/JetBrainsMono.zip" ]]; then
     echo -e "${RED}Error: Failed to download JetBrains Mono. Exiting.${RESET}"
     print_footer
     exit 1
 fi
+
+echo -e "${GREEN}Success: Download successful!${RESET}"
 
 # Step 3: Unzip the font files directly to the install directory
 echo -e "${CYAN}Step 3: Unzipping the font files to $INSTALL_DIR...${RESET}"
@@ -77,13 +87,13 @@ mkdir -p "$INSTALL_DIR"
 } &
 show_spinner $!
 
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Fonts unzipped successfully!${RESET}"
-else
+if [[ $? -ne 0 ]]; then
     echo -e "${RED}Error: Failed to unzip font files. Exiting.${RESET}"
     print_footer
     exit 1
 fi
+
+echo -e "${GREEN}Success: Fonts unzipped successfully!${RESET}"
 
 # Step 4: Clean up
 echo -e "${Y}Step 4: Cleaning up temporary files...${RESET}"
@@ -92,9 +102,7 @@ echo -e "${Y}Step 4: Cleaning up temporary files...${RESET}"
 } &
 show_spinner $!
 
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Cleanup successful!${RESET}"
-else
+if [[ $? -ne 0 ]]; then
     echo -e "${RED}Warning: Failed to clean up temporary files.${RESET}"
 fi
 
