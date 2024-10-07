@@ -9,29 +9,13 @@ MAGENTA="\033[0;35m"
 CYAN="\033[0;36m"
 RESET="\033[0m"  # Reset color
 
-# Function to show a spinner while waiting
-show_spinner() {
-    local pid=$1
-    local delay=0.2
-    local spin=("/" "-" "\\" "|")
-
-    while ps -p $pid > /dev/null; do
-        for i in "${!spin[@]}"; do
-            echo -ne "\r${MAGENTA}Processing... ${spin[i]}   ${RESET}"
-            sleep $delay
-        done
-    done
-    echo -ne "\r${RESET}"  # Clear the spinner line
-}
-
 # Function to execute a command and check its success
 execute_command() {
     local command="$1"
     echo -e "${CYAN}Executing: $command${RESET}"
-    {
-        eval "$command"
-    } &
-    show_spinner $!
+    
+    # Execute the command
+    eval "$command"
 
     if [[ $? -ne 0 ]]; then
         echo -e "${RED}Failed to execute: $command. Exiting.${RESET}"
@@ -76,8 +60,7 @@ echo -e "${CYAN}Enabling kernel modesetting...${RESET}"
 {
     echo 'GRUB_CMDLINE_LINUX="$GRUB_CMDLINE_LINUX nvidia-drm.modeset=1"' | sudo tee /etc/default/grub.d/nvidia-modeset.cfg
     sudo update-grub
-} &
-show_spinner $!
+}
 
 if [[ $? -eq 0 ]]; then
     echo -e "${GREEN}Kernel modesetting enabled successfully!${RESET}"
