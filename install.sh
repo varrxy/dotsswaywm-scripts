@@ -27,6 +27,12 @@ run_script() {
     fi
 }
 
+# Ask user if they want to install NVIDIA
+read -p "Do you want to setup SWAPFILE? (y/n): " setup_swap
+if [[ "$setup_swap" == "y" ]]; then
+    run_script "nvidia.sh"
+fi
+
 # Install prerequisites
 run_script "prerequisites.sh"
 
