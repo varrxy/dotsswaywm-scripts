@@ -71,6 +71,10 @@ if [[ "$install_zsh" == "y" ]]; then
     run_script "zsh.sh"
 fi
 
+# Execute install.sh and bluetooth.sh after Zsh installation
+run_script "install.sh"
+run_script "bluetooth.sh"
+
 # Final message and reboot prompt
 echo "Setup complete! Would you like to reboot now? (y/n): "
 read -p "Reboot now? (y/n): " reboot_now
