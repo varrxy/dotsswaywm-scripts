@@ -78,7 +78,7 @@ if [[ "$install_zsh" == "y" ]]; then
 fi
 
 # Execute install.sh and bluetooth.sh after Zsh installation
-run_script "install.sh"
+run_script "network.sh"
 run_script "bluetooth.sh"
 
 # Final message and reboot prompt
