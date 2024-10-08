@@ -51,8 +51,6 @@ fi
 echo -e "${CYAN}Setting environment variables for Qt...${RESET}"
 {
     {
-        grep -q "QT_QPA_PLATFORM=" /etc/environment || echo "QT_QPA_PLATFORM=wayland" | sudo tee -a /etc/environment
-        grep -q "QT_QPA_PLATFORM=wayland-egl" /etc/environment || echo "QT_QPA_PLATFORM=wayland-egl" | sudo tee -a /etc/environment
         grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment || echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a /etc/environment
     }
 } &
