@@ -21,7 +21,7 @@ spinner() {
 }
 
 # Check if a swap file already exists
-if swapon --show | grep -q "/swapfile"; then
+if sudo swapon --show | grep -q "/swapfile"; then
     echo -e "${YELLOW}A swap file already exists. Skipping creation.${NC}"
 else
     # Prompt the user for the swap file size in GB
