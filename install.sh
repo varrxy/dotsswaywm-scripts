@@ -27,7 +27,7 @@ run_script() {
     fi
 }
 
-# Ask user if they want to install NVIDIA
+# Ask user if they want to install Swap
 read -p "Do you want to setup SWAPFILE? (y/n): " setup_swap
 if [[ "$setup_swap" == "y" ]]; then
     run_script "swap.sh"
@@ -75,6 +75,12 @@ fi
 read -p "Do you want to install Zsh? (y/n): " install_zsh
 if [[ "$install_zsh" == "y" ]]; then
     run_script "zsh.sh"
+fi
+
+# Ask user if they want to setup MPD
+read -p "Do you want to setup MPD? (y/n): " setup_mpd
+if [[ "$setup_mpd" == "y" ]]; then
+    run_script "mpd.sh"
 fi
 
 # Ask user if they want to install NVIM
