@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Function to display a spinner
 spinner() {
@@ -43,43 +44,29 @@ else
 fi
 
 # Check the current configuration
-expected_config="[main]\nplugins=keyfile\n\n[ifupdown]\nmanaged=false"
+expected_config="[main]\nplugins=ifupdown,keyfile\n\n[ifupdown]\nmanaged=true"
 current_config=$(sudo cat /etc/NetworkManager/NetworkManager.conf)
 
 if [ "$current_config" == "$expected_config" ]; then
     print_color "33" "NetworkManager is already configured correctly. No changes made."
-    exit 0
-fi
-
-# Update package list
-print_color "34" "Updating package list..."
-sudo apt update
-
-# Configure NetworkManager
-print_color "34" "Configuring NetworkManager..."
-{
-    sudo tee /etc/NetworkManager/NetworkManager.conf > /dev/null <<EOL
+else
+    print_color "34" "Configuring NetworkManager..."
+    {
+        sudo tee /etc/NetworkManager/NetworkManager.conf > /dev/null <<EOL
 [main]
-plugins=keyfile
+plugins=ifupdown,keyfile
 
 [ifupdown]
-managed=false
+managed=true
 EOL
-} & spinner $!
+    } & spinner $!
+fi
 
-# Clean up interfaces file
-print_color "34" "Cleaning up /etc/network/interfaces..."
+# Clean up interfaces file (if necessary)
+print_color "34" "Ensuring /etc/network/interfaces is minimal..."
 {
     echo -e "auto lo\niface lo inet loopback" | sudo tee /etc/network/interfaces > /dev/null
 } & spinner $!
-
-# Remove ifupdown package if it's installed
-if dpkg -l | grep -q '^ii  ifupdown'; then
-    print_color "34" "Removing ifupdown package..."
-    {
-        sudo apt remove -y ifupdown
-    } & spinner $!
-fi
 
 # Restart NetworkManager
 print_color "34" "Restarting NetworkManager..."
