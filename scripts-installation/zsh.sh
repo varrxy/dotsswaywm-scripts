@@ -140,6 +140,7 @@ if ! grep -q 'source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh' ~/.zshrc; t
         echo 'setopt APPEND_HISTORY'  # Append to history file
         echo 'setopt INC_APPEND_HISTORY'  # Incremental append
         echo 'setopt SHARE_HISTORY'  # Share history across sessions
+	echo "alias ls='ls --color=auto'"  #Color 
     } >> ~/.zshrc
     echo -e "${GREEN}.zshrc configured successfully!${RESET}"
 else

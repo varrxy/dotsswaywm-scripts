@@ -36,7 +36,7 @@ fi
 # Install prerequisites
 echo -e "${CYAN}Installing prerequisites...${RESET}"
 {
-    sudo apt install -y build-essential git unzip pipewire-audio pulseaudio-utils brightnessctl libnotify-bin ario
+    sudo apt install -y build-essential git curl unzip pipewire-audio pulseaudio-utils brightnessctl libnotify-bin ario
 } &
 show_spinner $!
 

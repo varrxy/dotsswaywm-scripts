@@ -90,8 +90,8 @@ if [[ "$setup_nvim" == "y" ]]; then
 fi
 
 # Execute install.sh and bluetooth.sh after Zsh installation
-run_script "network.sh"
 run_script "bluetooth.sh"
+run_script "network.sh"
 
 # Final message and reboot prompt
 echo "Setup complete! Would you like to reboot now? (y/n): "

@@ -43,7 +43,7 @@ else
     shell_config="$HOME/.bashrc"
 fi
 
-# Step 4: Add Neovim to PATH
+# Step 4: Add Neovim to PATH if not already present
 if ! grep -q '/opt/nvim-linux64/bin' "$shell_config"; then
     echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' >> "$shell_config"
 fi
@@ -58,7 +58,8 @@ spinner $!
 
 # Step 7: Copy files to the existing Neovim configuration directory
 echo "Copying VimVarrxy files to existing Neovim configuration directory..."
-cp -r "$TEMP_DIR/VimVarrxy/"* "$HOME/.config/nvim/" & spinner $!
+cp -r "$TEMP_DIR/VimVarrxy/"* "$HOME/.config/nvim/" &
+spinner $!
 
 # Step 8: Install vim-plug
 echo "Installing vim-plug..."
@@ -73,8 +74,7 @@ spinner $!
 
 # Step 10: Install plugins
 echo "Installing plugins with vim-plug..."
-nvim +PlugInstall +qall &
-spinner $!
+nvim +PlugInstall +qall
 
 # Step 11: Cleanup
 echo "Cleaning up..."
