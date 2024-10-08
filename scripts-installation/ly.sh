@@ -80,7 +80,7 @@ if lspci | grep -i nvidia &> /dev/null; then
     run_command bash -c "echo '[Desktop Entry]
 Name=Sway
 Comment=An i3-compatible Wayland compositor
-Exec=/usr/bin/sway --unsupported-gpu
+Exec=sway --unsupported-gpu
 Type=Application' | sudo tee $SWAY_DESKTOP"
 else
     echo -e "${GREEN}No NVIDIA GPU detected. Modifying sway.desktop to remove --unsupported-gpu...${RESET}"
