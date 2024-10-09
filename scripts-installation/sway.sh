@@ -24,6 +24,9 @@ show_spinner() {
     echo -ne "\r${RESET}"  # Clear the spinner line
 }
 
+# Get the current username
+USERNAME=$(whoami)
+
 # Update package list
 echo -e "${CYAN}Updating package list...${RESET}"
 if sudo apt update; then
@@ -50,9 +53,7 @@ fi
 # Set environment variables for Qt
 echo -e "${CYAN}Setting environment variables for Qt...${RESET}"
 {
-    {
-        grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment || echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a /etc/environment
-    }
+    grep -q "QT_QPA_PLATFORMTHEME=qt5ct" /etc/environment || echo "QT_QPA_PLATFORMTHEME=qt5ct" | sudo tee -a /etc/environment
 } &
 show_spinner $!
 
@@ -97,6 +98,20 @@ if [[ $? -eq 0 ]]; then
     echo -e "${GREEN}Configuration files copied successfully!${RESET}"
 else
     echo -e "${RED}Failed to copy configuration files. Exiting.${RESET}"
+    exit 1
+fi
+
+# Change ownership of the media directory
+echo -e "${CYAN}Changing ownership of the media directory...${RESET}"
+{
+    sudo chown -R "$USERNAME:$USERNAME" /media/"$USERNAME"
+} &
+show_spinner $!
+
+if [[ $? -eq 0 ]]; then
+    echo -e "${GREEN}Ownership changed successfully!${RESET}"
+else
+    echo -e "${RED}Failed to change ownership. Exiting.${RESET}"
     exit 1
 fi
 
