@@ -40,7 +40,7 @@ run_command() {
 # Step 1: Update the package list and install essential dependencies.
 echo -e "${BLUE}Updating package list and installing dependencies...${RESET}"
 run_command sudo apt update
-run_command sudo apt install -y build-essential libpam0g-dev libxcb-xkb-dev git sway
+run_command sudo apt install -y build-essential libpam0g-dev libxcb-xkb-dev git
 
 # Step 2: Clone the Ly Reloaded repository into /tmp.
 echo -e "${BLUE}Cloning the Ly Reloaded repository...${RESET}"
