@@ -81,7 +81,7 @@ echo -e "${GREEN}Success: Download successful!${RESET}"
 
 # Step 3: Unzip the font files directly to the install directory
 echo -e "${CYAN}Step 3: Unzipping the font files to $INSTALL_DIR...${RESET}"
-mkdir -p "$INSTALL_DIR"
+sudo mkdir -p "$INSTALL_DIR"
 {
     sudo unzip -q "/tmp/JetBrainsMono.zip" -d "$INSTALL_DIR"
 } &
