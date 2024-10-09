@@ -11,9 +11,14 @@ RESET="\033[0m"  # Reset color
 
 # Define the repository and theme/icon names
 REPO_URL="https://github.com/varrxy/Theme"
-THEME_DIR="/tmp/Theme/catppuccin-macchiato-blue-standard+default"
-CURSOR_DIR="/tmp/Theme/catppuccin-macchiato-blue-cursors"
-TOKYO_NIGHT_DIR="/tmp/Theme/Tokyonight-Moon"
+THEME_NAME="catppuccin-macchiato-blue-standard+default"
+CURSOR_NAME="catppuccin-macchiato-blue-cursors"
+TOKYO_NIGHT_NAME="Tokyonight-Moon"
+
+# Temporary directories
+THEME_DIR="/tmp/Theme/$THEME_NAME"
+CURSOR_DIR="/tmp/Theme/$CURSOR_NAME"
+TOKYO_NIGHT_DIR="/tmp/Theme/$TOKYO_NIGHT_NAME"
 
 # Function to print a header
 print_header() {
@@ -47,16 +52,29 @@ show_spinner() {
 # Start of the script
 print_header
 
-# Step 1: Check if the theme is already installed
-echo -e "${CYAN}Step 1: Checking if the theme is already installed...${RESET}"
-if [ -d "/usr/share/themes/catppuccin-macchiato-blue-standard+default" ]; then
-    echo -e "${YELLOW}Notice: The theme already exists. No changes will be made.${RESET}"
+# Step 1: Create theme and icons directories if they don't exist
+mkdir -p ~/.themes ~/.icons
+
+# Step 2: Check if the theme is already installed
+echo -e "${CYAN}Step 2: Checking if the theme is already installed...${RESET}"
+if [ -d "$HOME/.themes/$THEME_NAME" ]; then
+    echo -e "${YELLOW}Notice: The theme '$THEME_NAME' already exists in ~/.themes. No changes will be made.${RESET}"
     print_footer
     exit 0
 fi
 
-# Step 2: Clone the repository
-echo -e "${CYAN}Step 2: Cloning the repository...${RESET}"
+# Check if the cursor icons already exist
+if [ -d "$HOME/.icons/$CURSOR_NAME" ]; then
+    echo -e "${YELLOW}Notice: The cursors '$CURSOR_NAME' already exist in ~/.icons. No changes will be made.${RESET}"
+fi
+
+# Check if the Tokyonight icons already exist
+if [ -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
+    echo -e "${YELLOW}Notice: The Tokyonight icons '$TOKYO_NIGHT_NAME' already exist in ~/.icons. No changes will be made.${RESET}"
+fi
+
+# Step 3: Clone the repository
+echo -e "${CYAN}Step 3: Cloning the repository...${RESET}"
 {
     git clone "$REPO_URL" /tmp/Theme
 } &
@@ -70,10 +88,10 @@ else
     exit 1
 fi
 
-# Step 3: Move the theme to the themes directory
-echo -e "${CYAN}Step 3: Moving theme to /usr/share/themes...${RESET}"
+# Step 4: Move the theme to the themes directory
+echo -e "${CYAN}Step 4: Moving theme to ~/.themes...${RESET}"
 {
-    sudo mv "$THEME_DIR" /usr/share/themes/
+    mv "$THEME_DIR" "$HOME/.themes/"
 } &
 show_spinner $!
 
@@ -85,39 +103,42 @@ else
     exit 1
 fi
 
-# Step 4: Move the cursors and Tokyonight icons to the icons directory
-echo -e "${CYAN}Step 4: Moving icons to /usr/share/icons...${RESET}"
+# Step 5: Move the cursors to the icons directory if they don't already exist
+if [ ! -d "$HOME/.icons/$CURSOR_NAME" ]; then
+    echo -e "${CYAN}Step 6: Moving Catppuccin cursors to ~/.icons...${RESET}"
+    {
+        mv "$CURSOR_DIR" "$HOME/.icons/"
+    } &
+    show_spinner $!
 
-# Move Catppuccin cursors
-{
-    sudo mv "$CURSOR_DIR" /usr/share/icons/
-} &
-show_spinner $!
-
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Catppuccin cursors moved successfully!${RESET}"
-else
-    echo -e "${RED}Error: Failed to move Catppuccin cursors. Exiting.${RESET}"
-    print_footer
-    exit 1
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}Success: Catppuccin cursors moved successfully!${RESET}"
+    else
+        echo -e "${RED}Error: Failed to move Catppuccin cursors. Exiting.${RESET}"
+        print_footer
+        exit 1
+    fi
 fi
 
-# Move Tokyonight-Moon icons
-{
-    sudo mv "$TOKYO_NIGHT_DIR" /usr/share/icons/
-} &
-show_spinner $!
+# Move Tokyonight-Moon icons to the icons directory if they don't already exist
+if [ ! -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
+    echo -e "${CYAN}Step 7: Moving Tokyonight-Moon icons to ~/.icons...${RESET}"
+    {
+        mv "$TOKYO_NIGHT_DIR" "$HOME/.icons/"
+    } &
+    show_spinner $!
 
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Tokyonight-Moon icons moved successfully!${RESET}"
-else
-    echo -e "${RED}Error: Failed to move Tokyonight-Moon icons. Exiting.${RESET}"
-    print_footer
-    exit 1
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}Success: Tokyonight-Moon icons moved successfully!${RESET}"
+    else
+        echo -e "${RED}Error: Failed to move Tokyonight-Moon icons. Exiting.${RESET}"
+        print_footer
+        exit 1
+    fi
 fi
 
-# Step 5: Clean up
-echo -e "${YELLOW}Step 5: Cleaning up temporary files...${RESET}"
+# Step 8: Clean up
+echo -e "${YELLOW}Step 9: Cleaning up temporary files...${RESET}"
 {
     rm -rf /tmp/Theme
 } &
