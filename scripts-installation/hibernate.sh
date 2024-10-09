@@ -27,6 +27,13 @@ check_command "Failed to get swap file offset."
 
 # Update /etc/default/grub
 GRUB_CONFIG="/etc/default/grub"
+
+# Check if hibernation is already configured
+if grep -q "resume=UUID=$UUID resume_offset=$OFFSET" "$GRUB_CONFIG"; then
+    echo "Hibernation is already set up correctly."
+    exit 0
+fi
+
 if grep -q "GRUB_CMDLINE_LINUX_DEFAULT" "$GRUB_CONFIG"; then
     sudo sed -i.bak "s|GRUB_CMDLINE_LINUX_DEFAULT=\"\(.*\)\"|GRUB_CMDLINE_LINUX_DEFAULT=\"\1 resume=UUID=$UUID resume_offset=$OFFSET\"|" "$GRUB_CONFIG"
     check_command "Failed to update GRUB configuration."
@@ -37,8 +44,13 @@ fi
 
 # Create or update /etc/initramfs-tools/conf.d/resume
 RESUME_CONFIG="/etc/initramfs-tools/conf.d/resume"
-echo "RESUME=UUID=$UUID resume_offset=$OFFSET" | sudo tee "$RESUME_CONFIG" > /dev/null
-check_command "Failed to update initramfs resume configuration."
+
+if grep -q "RESUME=UUID=$UUID resume_offset=$OFFSET" "$RESUME_CONFIG"; then
+    echo "Hibernation configuration is already present in $RESUME_CONFIG."
+else
+    echo "RESUME=UUID=$UUID resume_offset=$OFFSET" | sudo tee "$RESUME_CONFIG" > /dev/null
+    check_command "Failed to update initramfs resume configuration."
+fi
 
 # Update grub and initramfs
 sudo update-grub
