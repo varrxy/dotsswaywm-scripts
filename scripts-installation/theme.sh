@@ -59,52 +59,44 @@ mkdir -p ~/.themes ~/.icons
 echo -e "${CYAN}Step 2: Checking if the theme is already installed...${RESET}"
 if [ -d "$HOME/.themes/$THEME_NAME" ]; then
     echo -e "${YELLOW}Notice: The theme '$THEME_NAME' already exists in ~/.themes. No changes will be made.${RESET}"
-    print_footer
-    exit 0
+else
+    # Step 3: Clone the repository if the theme does not exist
+    echo -e "${CYAN}Step 3: Cloning the repository...${RESET}"
+    {
+        git clone "$REPO_URL" /tmp/Theme
+    } &
+    show_spinner $!
+
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}Success: Repository cloned successfully!${RESET}"
+    else
+        echo -e "${RED}Error: Failed to clone the repository. Exiting.${RESET}"
+        print_footer
+        exit 1
+    fi
+
+    # Step 4: Move the theme to the themes directory
+    echo -e "${CYAN}Step 4: Moving theme to ~/.themes...${RESET}"
+    {
+        mv "$THEME_DIR" "$HOME/.themes/"
+    } &
+    show_spinner $!
+
+    if [[ $? -eq 0 ]]; then
+        echo -e "${GREEN}Success: Theme moved successfully!${RESET}"
+    else
+        echo -e "${RED}Error: Failed to move theme. Exiting.${RESET}"
+        print_footer
+        exit 1
+    fi
 fi
 
-# Check if the cursor icons already exist
+# Step 5: Check if the cursor icons already exist
+echo -e "${CYAN}Step 5: Checking if the cursor icons are already installed...${RESET}"
 if [ -d "$HOME/.icons/$CURSOR_NAME" ]; then
     echo -e "${YELLOW}Notice: The cursors '$CURSOR_NAME' already exist in ~/.icons. No changes will be made.${RESET}"
-fi
-
-# Check if the Tokyonight icons already exist
-if [ -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
-    echo -e "${YELLOW}Notice: The Tokyonight icons '$TOKYO_NIGHT_NAME' already exist in ~/.icons. No changes will be made.${RESET}"
-fi
-
-# Step 3: Clone the repository
-echo -e "${CYAN}Step 3: Cloning the repository...${RESET}"
-{
-    git clone "$REPO_URL" /tmp/Theme
-} &
-show_spinner $!
-
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Repository cloned successfully!${RESET}"
 else
-    echo -e "${RED}Error: Failed to clone the repository. Exiting.${RESET}"
-    print_footer
-    exit 1
-fi
-
-# Step 4: Move the theme to the themes directory
-echo -e "${CYAN}Step 4: Moving theme to ~/.themes...${RESET}"
-{
-    mv "$THEME_DIR" "$HOME/.themes/"
-} &
-show_spinner $!
-
-if [[ $? -eq 0 ]]; then
-    echo -e "${GREEN}Success: Theme moved successfully!${RESET}"
-else
-    echo -e "${RED}Error: Failed to move theme. Exiting.${RESET}"
-    print_footer
-    exit 1
-fi
-
-# Step 5: Move the cursors to the icons directory if they don't already exist
-if [ ! -d "$HOME/.icons/$CURSOR_NAME" ]; then
+    # Move the cursors to the icons directory
     echo -e "${CYAN}Step 6: Moving Catppuccin cursors to ~/.icons...${RESET}"
     {
         mv "$CURSOR_DIR" "$HOME/.icons/"
@@ -120,9 +112,12 @@ if [ ! -d "$HOME/.icons/$CURSOR_NAME" ]; then
     fi
 fi
 
-# Move Tokyonight-Moon icons to the icons directory if they don't already exist
-if [ ! -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
-    echo -e "${CYAN}Step 7: Moving Tokyonight-Moon icons to ~/.icons...${RESET}"
+# Step 7: Check if the Tokyonight icons already exist
+echo -e "${CYAN}Step 8: Checking if the Tokyonight icons are already installed...${RESET}"
+if [ -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
+    echo -e "${YELLOW}Notice: The Tokyonight icons '$TOKYO_NIGHT_NAME' already exist in ~/.icons. No changes will be made.${RESET}"
+else
+    echo -e "${CYAN}Step 9: Moving Tokyonight-Moon icons to ~/.icons...${RESET}"
     {
         mv "$TOKYO_NIGHT_DIR" "$HOME/.icons/"
     } &
@@ -137,8 +132,8 @@ if [ ! -d "$HOME/.icons/$TOKYO_NIGHT_NAME" ]; then
     fi
 fi
 
-# Step 8: Clean up
-echo -e "${YELLOW}Step 9: Cleaning up temporary files...${RESET}"
+# Step 10: Clean up
+echo -e "${YELLOW}Step 11: Cleaning up temporary files...${RESET}"
 {
     rm -rf /tmp/Theme
 } &
