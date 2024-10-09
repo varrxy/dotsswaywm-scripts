@@ -36,7 +36,7 @@ fi
 # Install Sway and related packages
 echo -e "${CYAN}Installing Sway and related packages...${RESET}"
 {
-    sudo apt install -y sway swaybg swayidle swaylock xwayland xdg-desktop-portal-wlr waybar wofi wlogout sway-notification-center qt5ct libglib2.0-bin grim slurp
+    sudo apt install -y sway swaybg swayidle swaylock xwayland xdg-desktop-portal-wlr waybar wofi wlogout sway-notification-center qt5ct libglib2.0-bin grim slurp lxpolkit thunar
 } &
 show_spinner $!
 
