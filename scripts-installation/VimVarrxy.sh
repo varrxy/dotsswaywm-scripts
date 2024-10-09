@@ -74,7 +74,6 @@ spinner $!
 # Step 10: Install plugins
 echo "Installing plugins with vim-plug..."
 nvim +PlugInstall +qall &
-spinner $!
 
 # Step 11: Cleanup
 echo "Cleaning up..."
