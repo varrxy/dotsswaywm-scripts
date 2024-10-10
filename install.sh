@@ -33,6 +33,12 @@ if [[ "$setup_swap" == "y" ]]; then
     run_script "swap.sh"
 fi
 
+# Ask user if they want to install Hibernate
+read -p "Do you want to setup HIBERNATE? (y/n): " setup_hiber
+if [[ "$setup_hiber" == "y" ]]; then
+    run_script "hibernate.sh"
+fi
+
 # Install prerequisites
 run_script "prerequisites.sh"
 
