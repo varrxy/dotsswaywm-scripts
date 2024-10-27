@@ -43,6 +43,7 @@ packages=(
     "xdg-desktop-portal-wlr"
     "libglib2.0-bin"
     "guvcview"
+    "btop"
 )
 
 # Install packages
