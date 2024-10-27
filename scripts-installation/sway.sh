@@ -42,6 +42,7 @@ packages=(
     "xwayland"
     "xdg-desktop-portal-wlr"
     "libglib2.0-bin"
+    "guvcview"
 )
 
 # Install packages
