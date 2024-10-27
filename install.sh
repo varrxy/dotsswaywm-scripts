@@ -54,16 +54,6 @@ if [[ "$install_sway" == "y" ]]; then
     run_script "sway.sh"
 fi
 
-# Clone wallpapers
-run_script "wall.sh"
-
-# Ask user if they want to install themes
-read -p "Do you want to install themes? (y/n): " install_themes
-if [[ "$install_themes" == "y" ]]; then
-    echo "Installing themes..."
-    run_script "theme.sh"
-fi
-
 # Ask user if they want to install fonts
 read -p "Do you want to install fonts? (y/n): " install_fonts
 if [[ "$install_fonts" == "y" ]]; then
