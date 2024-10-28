@@ -58,6 +58,15 @@ for package in "${packages[@]}"; do
     fi
 done
 
+# Check and add QT_QPA_PLATFORMTHEME to /etc/environment
+LINE="QT_QPA_PLATFORMTHEME=qt5ct"
+if grep -Fxq "$LINE" /etc/environment; then
+    log "${YELLOW}The line '$LINE' already exists in /etc/environment.${NC}"
+else
+    echo "$LINE" | sudo tee -a /etc/environment
+    log "${GREEN}Added the line '$LINE' to /etc/environment.${NC}"
+fi
+
 # Clone the GitHub repository
 log "${YELLOW}Cloning GitHub repository...${NC}"
 if git clone https://github.com/varrxy/swaywm-setup.git /tmp/swaywm-setup &>> "$LOG_FILE"; then
