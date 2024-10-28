@@ -30,6 +30,7 @@ fi
 # Install Sway and Related Applications
 packages=(
     "sway"
+    "swayidle"
     "swaybg"
     "sway-notification-center"
     "swaylock"
