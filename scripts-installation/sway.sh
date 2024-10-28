@@ -31,6 +31,7 @@ fi
 packages=(
     "sway"
     "swaybg"
+    "sway-notification-center"
     "swaylock"
     "wofi"
     "waybar"
