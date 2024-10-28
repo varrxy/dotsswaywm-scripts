@@ -46,6 +46,7 @@ packages=(
     "libglib2.0-bin"
     "guvcview"
     "btop"
+    "lxpolkit"
 )
 
 # Install packages
