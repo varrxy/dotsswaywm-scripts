@@ -2,7 +2,7 @@
 
 ## Swap File Setup
 
-The swap file will be created by the `swapfile.sh` script. If you have already set up a swap file, please remove it before running the `swapfile.sh` script.
+The swap file will be created by the `swapfile.sh` script. If you have already set up a swap file, it promt you want swapfile or not y/n do your choice 
 
 ### Swap File Size
 
