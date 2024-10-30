@@ -1,5 +1,7 @@
 # Installation Instructions
 
+Note : Dont run script as root
+
 ## Swap File Setup
 
 The swap file will be created by the `swapfile.sh` script. If you have already set up a swap file, it promt you want swapfile or not y/n do your choice 
