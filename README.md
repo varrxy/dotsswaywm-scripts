@@ -16,6 +16,7 @@ and so on.....
 ## Hibernation
 
 Hibernation will work effectively if you use the `swapfile.sh` script to create the swap file or if you have any other properly configured swap file.
+Note: The script is not compatible with swap partition.
 
 ## Important Warnings
 
