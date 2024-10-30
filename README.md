@@ -24,7 +24,7 @@ Before running the installation script, please ensure the following:
 
 1. **Debian Installation**: Please run the script as instructed.
 
-2. **NVIDIA Drivers**: If you are using NVIDIA graphics, you must enable the non-free repository in your `sources.list`. This is essential for proper driver support.
+2. **NVIDIA Drivers**: If you are using NVIDIA graphics, you must enable the non-free repository in your `sources.list`. This is essential for proper driver installation other wise it failed to install pkg from apt .
 
 3. **Login Manager**: If you are using any display manager (such as LightDM, GDM, etc.), **do not use** the `ly` login manager. When prompted in the script, select "no" to avoid conflicts.
 
